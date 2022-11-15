@@ -68,6 +68,8 @@ describe("Cache component tests", () => {
       client.resetStore();
 
       writeData({
+        currentClientId: null,
+        clientIds: [],
         queries: [],
         mutations: [],
         cache: JSON.stringify(CACHE_DATA),
@@ -123,6 +125,8 @@ describe("Cache component tests", () => {
 
     beforeEach(() => {
       writeData({
+        currentClientId: null,
+        clientIds: [],
         queries: [],
         mutations: [],
         cache: JSON.stringify(CACHE_DATA),

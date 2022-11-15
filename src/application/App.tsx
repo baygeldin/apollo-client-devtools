@@ -6,6 +6,7 @@ import { Queries } from "./components/Queries/Queries";
 import { Mutations } from "./components/Mutations/Mutations";
 import { Explorer } from "./components/Explorer/Explorer";
 import { Cache } from "./components/Cache/Cache";
+import { Clients } from "./components/Clients/Clients";
 
 export const reloadStatus = makeVar<boolean>(false);
 
@@ -14,6 +15,7 @@ const screens = {
   [Screens.Queries]: Queries,
   [Screens.Mutations]: Mutations,
   [Screens.Cache]: Cache,
+  [Screens.Clients]: Clients,
 };
 
 const GET_OPERATION_COUNTS = gql`

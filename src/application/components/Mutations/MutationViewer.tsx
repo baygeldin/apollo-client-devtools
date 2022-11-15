@@ -52,10 +52,14 @@ export const MutationViewer = ({
           <IconCopy css={copyIconStyle} data-testid="copy-mutation-string" />
         </CopyToClipboard>
       </h4>
-      <GraphQLCodeBlock
-        css={queryStringMain}
-        src={mutationString}
-      />
+      {mutationString ? (
+        <GraphQLCodeBlock
+          css={queryStringMain}
+          src={mutationString}
+        />
+      ) : (
+        <p>Mutation string is empty</p>
+      )}
       <div>
         <div css={queryDataHeader}>
           <span>Variables</span>

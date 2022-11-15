@@ -123,6 +123,7 @@ export const QueryViewer = ({
     currentTab === QueryTabs.Variables ? variables : cachedData
   )}`;
   const treeTheme = useTreeTheme();
+
   return (
     <div css={queryViewStyles}>
       <h4 css={queryStringHeader}>
@@ -131,10 +132,14 @@ export const QueryViewer = ({
           <IconCopy css={copyIconStyle} data-testid="copy-query-string" />
         </CopyToClipboard>
       </h4>
-      <GraphQLCodeBlock
-        css={queryStringMain}
-        src={queryString}
-      />
+      {queryString ? (
+        <GraphQLCodeBlock
+          css={queryStringMain}
+          src={queryString}
+        />
+      ) : (
+        <p>Query string is empty</p>
+      )}
       <Tabs onChange={(index) => setCurrentTab(index)}>
         <TabList css={queryDataHeader}>
           <Tab>Variables</Tab>

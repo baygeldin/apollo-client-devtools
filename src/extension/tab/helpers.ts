@@ -36,24 +36,26 @@ export function getQueries(observableQueries: ObservableQuery[]): QueryInfo[] {
 
 // Version of getQueries compatible with Apollo Client versions < 3.4.0
 export function getQueriesLegacy(queryMap: any): QueryInfo[] {
-    let queries: QueryInfo[] = [];
-    if (queryMap) {
-      queries = [...queryMap.values()].map(({
-        document,
-        variables,
-        diff,
-      }) => ({
-          document,
-          source: document?.loc?.source,
-          variables,
-          cachedData: diff?.result,
-        })
-      )
-    }
-    return queries;
+  let queries: QueryInfo[] = [];
+  if (queryMap) {
+    queries = [...queryMap.values()].map(({
+      document,
+      variables,
+      diff,
+    }) => ({
+      document,
+      source: document?.loc?.source,
+      variables,
+      cachedData: diff?.result,
+    })
+    )
   }
+  return queries;
+}
 
 export function getMutations(mutationsObj): QueryInfo[] {
+  if (!mutationsObj) return [];
+
   const keys = Object.keys(mutationsObj);
 
   if (keys.length === 0) {

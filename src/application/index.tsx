@@ -61,12 +61,17 @@ const cache = new InMemoryCache({
         cache() {
           return cacheVar();
         },
+        clients() {
+          return clientsVar();
+        }
       },
     },
   },
 });
 
 const cacheVar = makeVar(null);
+const clientsVar = makeVar({ ids: [], current: null });
+
 export const client = new ApolloClient({
   cache,
 });
@@ -147,7 +152,7 @@ export function getMutationData(mutation, key: number): Mutation | undefined {
   };
 }
 
-export const writeData = ({ queries, mutations, cache }) => {
+export const writeData = ({ currentClientId, clientIds, queries, mutations, cache }) => {
   const filteredQueries: WatchedQuery[] = queries
     .map((q, i: number) => getQueryData(q, i))
     .filter(Boolean);
@@ -175,7 +180,10 @@ export const writeData = ({ queries, mutations, cache }) => {
       },
     },
   });
+
   cacheVar(cache);
+
+  clientsVar({ ids: clientIds, current: currentClientId });
 };
 
 export const handleReload = () => {

@@ -10,6 +10,7 @@ import {
   EXPLORER_REQUEST,
   RELOADING_TAB,
   RELOAD_TAB_COMPLETE,
+  SWITCH_CLIENT,
 } from "../constants";
 
 const inspectedTabId = chrome.devtools.inspectedWindow.tabId;
@@ -51,18 +52,20 @@ devtools.addConnection(EXPLORER_SUBSCRIPTION_TERMINATION, () => {
 devtools.listen(CREATE_DEVTOOLS_PANEL, ({ payload }) => {
   if (!isPanelCreated) {
     chrome.devtools.panels.create(
-      "Apollo",
+      "Apollo (Playbook)",
       "logo_devtools.png",
       "panel.html",
       function (panel) {
         isPanelCreated = true;
-        const { queries, mutations, cache } = JSON.parse(payload);
+        const { currentClientId, clientIds, queries, mutations, cache } = JSON.parse(payload);
         let removeUpdateListener;
         let removeExplorerForward;
         let removeSubscriptionTerminationListener;
         let removeReloadListener;
         let clearRequestInterval;
         let removeExplorerListener;
+        let removeSwitchClientListener;
+        let removeSwitchClientForward;
 
         panel.onShown.addListener((window) => {
           sendMessageToClient(PANEL_OPEN);
@@ -76,20 +79,21 @@ devtools.listen(CREATE_DEVTOOLS_PANEL, ({ payload }) => {
               sendResponseToExplorer,
               handleReload,
               handleReloadComplete,
+              receiveSwitchClient,
             },
           } = window as any;
 
           if (!isAppInitialized) {
             initialize();
-            writeData({ queries, mutations, cache: JSON.stringify(cache) });
+            writeData({ currentClientId, clientIds, queries, mutations, cache: JSON.stringify(cache) });
             isAppInitialized = true;
           }
 
           clearRequestInterval = startRequestInterval();
 
           removeUpdateListener = devtools.listen(UPDATE, ({ payload }) => {
-            const { queries, mutations, cache } = JSON.parse(payload);
-            writeData({ queries, mutations, cache: JSON.stringify(cache) });
+            const { currentClientId, clientIds, queries, mutations, cache } = JSON.parse(payload);
+            writeData({ currentClientId, clientIds, queries, mutations, cache: JSON.stringify(cache) });
           });
 
           // Add connection so client can send to `background:devtools-${inspectedTabId}:explorer`
@@ -106,6 +110,15 @@ devtools.listen(CREATE_DEVTOOLS_PANEL, ({ payload }) => {
           // Forward all Explorer requests to the client
           removeExplorerForward = devtools.forward(
             EXPLORER_REQUEST,
+            `background:tab-${inspectedTabId}:client`
+          );
+
+          removeSwitchClientListener = receiveSwitchClient(({ detail }) => {
+            devtools.broadcast(detail);
+          });
+
+          removeSwitchClientForward = devtools.forward(
+            SWITCH_CLIENT,
             `background:tab-${inspectedTabId}:client`
           );
 
@@ -126,6 +139,8 @@ devtools.listen(CREATE_DEVTOOLS_PANEL, ({ payload }) => {
           isPanelCreated = false;
           clearRequestInterval();
           removeExplorerForward();
+          removeSwitchClientForward();
+          removeSwitchClientListener();
           removeSubscriptionTerminationListener();
           removeUpdateListener();
           removeReloadListener();

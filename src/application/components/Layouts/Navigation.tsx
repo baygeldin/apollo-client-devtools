@@ -12,6 +12,7 @@ export enum Screens {
   Queries = "queries",
   Mutations = "mutations",
   Explorer = "explorer",
+  Clients = "clients",
 }
 
 type NavButtonProps = {
@@ -147,6 +148,14 @@ export const Navigation: React.FC<NavigationProps> = ({
             onClick={() => onNavigate(Screens.Cache)}
           >
             Cache
+          </NavButton>
+        </li>
+        <li>
+          <NavButton
+            isSelected={isSelected(Screens.Clients)}
+            onClick={() => onNavigate(Screens.Clients)}
+          >
+            Clients
           </NavButton>
         </li>
       </ul>

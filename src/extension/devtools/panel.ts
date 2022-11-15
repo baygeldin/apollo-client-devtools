@@ -5,6 +5,9 @@ import {
   handleReloadComplete,
 } from "../../application";
 import {
+  receiveSwitchClient,
+} from "../../application/components/Clients/Clients";
+import {
   receiveExplorerRequests,
   receiveSubscriptionTerminationRequest,
   sendResponseToExplorer,
@@ -18,4 +21,5 @@ import {
   sendResponseToExplorer,
   handleReload,
   handleReloadComplete,
+  receiveSwitchClient,
 };

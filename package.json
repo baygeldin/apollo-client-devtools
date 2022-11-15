@@ -1,8 +1,8 @@
 {
-  "name": "apollo-client-devtools",
-  "description": "Developer tools for Apollo Client, with Studio Explorer integration, cache inspection, and query watching.",
+  "name": "apollo-client-devtools-playbook",
+  "description": "Developer tools for Apollo Client, with Studio Explorer integration, cache inspection, and query watching (custom build for Playbook).",
   "license": "MIT",
-  "version": "4.1.3",
+  "version": "4.2.0",
   "scripts": {
     "install:client": "npm install --prefix development/client",
     "install:server": "npm install --prefix development/server",
